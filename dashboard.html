@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supreme Legal Intelligence</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background: radial-gradient(circle at top,#1a1a1a,#000000 70%);
+    color:#f5f5f5;
+    overflow-x:hidden;
+}
+
+/* GOLD ACCENT */
+:root{
+    --gold:#d4af37;
+}
+
+/* HEADER */
+header{
+    text-align:center;
+    padding:40px 20px 10px;
+}
+
+header h1{
+    font-family:'Playfair Display',serif;
+    font-size:38px;
+    color:var(--gold);
+    letter-spacing:2px;
+}
+
+header p{
+    opacity:0.7;
+    margin-top:10px;
+}
+
+/* SEARCH BAR */
+.search-container{
+    text-align:center;
+    margin:30px 0;
+}
+
+.search-container input{
+    width:60%;
+    padding:15px 25px;
+    border-radius:50px;
+    border:2px solid var(--gold);
+    background:transparent;
+    color:white;
+    font-size:16px;
+    outline:none;
+    transition:0.3s;
+}
+
+.search-container input:focus{
+    box-shadow:0 0 20px var(--gold);
+}
+
+/* CASE COUNTER */
+.counter{
+    text-align:center;
+    margin-top:10px;
+    color:var(--gold);
+    font-weight:600;
+}
+
+/* RESULTS */
+#results{
+    width:80%;
+    margin:30px auto;
+}
+
+/* CASE CARD */
+.case-card{
+    background:rgba(255,255,255,0.05);
+    border-left:4px solid var(--gold);
+    padding:25px;
+    margin-bottom:30px;
+    border-radius:15px;
+    backdrop-filter:blur(8px);
+    animation:fadeIn 0.6s ease forwards;
+}
+
+.case-card h2{
+    color:var(--gold);
+    margin-bottom:10px;
+}
+
+.label{
+    color:var(--gold);
+    font-weight:600;
+}
+
+/* ADVOCATE SECTION */
+.advocate-box{
+    margin-top:20px;
+    padding:20px;
+    background:rgba(212,175,55,0.08);
+    border-radius:12px;
+}
+
+/* FLIP ID CARD */
+.id-container{
+    perspective:1000px;
+    margin-top:20px;
+}
+
+.id-card{
+    width:350px;
+    height:220px;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform 0.8s;
+}
+
+.id-card:hover{
+    transform:rotateY(180deg);
+}
+
+.id-front,.id-back{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:15px;
+    backface-visibility:hidden;
+    padding:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+
+.id-front{
+    background:linear-gradient(135deg,#000,#1c1c1c);
+    border:2px solid var(--gold);
+    color:var(--gold);
+}
+
+.id-back{
+    background:linear-gradient(135deg,#111,#000);
+    transform:rotateY(180deg);
+    border:2px solid var(--gold);
+    color:white;
+}
+
+.demo-tag{
+    font-size:12px;
+    opacity:0.6;
+}
+
+/* ANIMATION */
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+@media(max-width:768px){
+    .search-container input{
+        width:90%;
+    }
+    #results{
+        width:95%;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>⚖ Supreme Legal Intelligence ⚖</h1>
+    <p>Indian Supreme • High Courts • Constitutional Bench Cases</p>
+</header>
+
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search by case name, year, keyword, category..." oninput="searchCases()">
+</div>
+
+<div class="counter" id="caseCounter"></div>
+
+<div id="results"></div>
+
+<script src="cases.js"></script>
+
+<script>
+
+function searchCases(){
+
+    const query=document.getElementById("searchInput").value.toLowerCase();
+    const results=document.getElementById("results");
+    const counter=document.getElementById("caseCounter");
+    results.innerHTML="";
+
+    if(query===""){
+        counter.innerHTML="";
+        return;
+    }
+
+    const filtered=cases.filter(c =>
+        c.title.toLowerCase().includes(query) ||
+        c.court.toLowerCase().includes(query) ||
+        c.category.toLowerCase().includes(query) ||
+        c.year.toString().includes(query) ||
+        c.keywords.join(" ").toLowerCase().includes(query)
+    );
+
+    counter.innerHTML = filtered.length + " Case(s) Found";
+
+    if(filtered.length===0){
+        results.innerHTML="<p style='text-align:center;'>No matching case found.</p>";
+        return;
+    }
+
+    filtered.forEach(c=>{
+
+        results.innerHTML+=`
+        <div class="case-card">
+
+            <h2>${c.title}</h2>
+
+            <p><span class="label">Court:</span> ${c.court}</p>
+            <p><span class="label">Year:</span> ${c.year}</p>
+            <p><span class="label">Category:</span> ${c.category}</p>
+            <p><span class="label">Facts:</span> ${c.facts}</p>
+            <p><span class="label">Issue:</span> ${c.issue}</p>
+            <p><span class="label">Judgment:</span> ${c.judgment}</p>
+            <p><span class="label">Significance:</span> ${c.significance}</p>
+
+            <div class="advocate-box">
+                <h3 style="color:var(--gold);">Assigned Advocate</h3>
+                <p><span class="label">Name:</span> ${c.advocate.name}</p>
+                <p><span class="label">Enrollment:</span> ${c.advocate.enrollment}</p>
+                <p><span class="label">Phone:</span> ${c.advocate.phone}</p>
+                <p><span class="label">Email:</span> ${c.advocate.email}</p>
+                <p><span class="label">Experience:</span> ${c.advocate.experience}</p>
+                <p><span class="label">Office:</span> ${c.advocate.office}</p>
+
+                <div class="id-container">
+                    <div class="id-card">
+                        <div class="id-front">
+                            <h3>Bar Council of ${c.stateBarCouncil}</h3>
+                            <p><strong>${c.advocate.name}</strong></p>
+                            <p>Enrollment: ${c.advocate.enrollment}</p>
+                            <p class="demo-tag">Project Demonstration ID</p>
+                        </div>
+                        <div class="id-back">
+                            <p><strong>Contact:</strong> ${c.advocate.phone}</p>
+                            <p><strong>Email:</strong> ${c.advocate.email}</p>
+                            <p><strong>Office:</strong> ${c.advocate.office}</p>
+                            <p class="demo-tag">Not an Official Government ID</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        `;
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
